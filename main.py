@@ -73,21 +73,21 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, day):
 
         if is_yes(row[vk_index]):
             try:
-                post_vkontakte(img_path, dotenv_dict['vkontakte_token'], dotenv_dict['vkontakte_group_id'], text)
+                post_vkontakte(img_path, dotenv_dict['VKONTAKTE_TOKEN'], dotenv_dict['VKONTAKTE_GROUP_ID'], text)
                 values[sheet_row_num][vk_index] = 'нет'
             except:
                 is_all_posted = False
 
         if is_yes(row[telegram_index]):
             try:
-                post_telegram(img_path, dotenv_dict['telegram_token'], dotenv_dict['telegram_chat_id'], text)
+                post_telegram(img_path, dotenv_dict['TELEGRAM_TOKEN'], dotenv_dict['TELEGRAM_CHAT_ID'], text)
                 values[sheet_row_num][telegram_index] = 'нет'
             except:
                 is_all_posted = False
 
         if is_yes(row[facebook_index]):
             try:
-                post_facebook(img_path, dotenv_dict['facebook_token'], dotenv_dict['facebook_group_id'], text)
+                post_facebook(img_path, dotenv_dict['FACEBOOK_TOKEN'], dotenv_dict['FACEBOOK_GROUP_ID'], text)
                 values[sheet_row_num][facebook_index] = 'нет'
 
             except:
