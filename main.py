@@ -1,6 +1,8 @@
 import os.path
 from googleapiclient.discovery import build
 
+import time
+
 from dotenv import dotenv_values
 
 from social_media.facebook import post_facebook
@@ -9,12 +11,16 @@ from social_media.vkontakte import post_vkontakte
 
 # The ID and range of a sample spreadsheet.
 
-from utils.time import is_it_publish_time, time_sleep
+from utils.time import is_it_publish_time, get_rus_weekday_title
 from utils.google_auth import get_credentials
 from utils.google_spreadsheet import get_google_drive_id, get_spreadsheet_id_by_title, get_values_from_spreadsheet, \
     update_values_in_spreadsheet
 from utils.pydrive import get_file_list, get_drive, download_txt_file_from_google_drive, \
     download_img_file_from_google_drive
+
+
+def time_sleep(minutes):
+    time.sleep(minutes * 60)
 
 
 def is_yes(word: str) -> bool:
@@ -23,7 +29,9 @@ def is_yes(word: str) -> bool:
     return word == 'да' or word == 'yes'
 
 
-def check_spreadsheet(dotenv_dict, spreadsheet_id, range, day):
+def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
+    day = get_rus_weekday_title()
+
     img_dir = 'images'
 
     creds = get_credentials()
@@ -100,9 +108,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, day):
 
 
 if __name__ == '__main__':
-
-    SAMPLE_RANGE_NAME = 'A2:H'
-    day = 'суббота'
+    range_ = 'A2:H'
     title = 'Расписание публикаций ноябрь'
 
     drive = get_drive()
@@ -112,5 +118,5 @@ if __name__ == '__main__':
     dotenv_dict = dotenv_values()
 
     while True:
-        check_spreadsheet(dotenv_dict, spreadsheet_id, SAMPLE_RANGE_NAME, day)
+        check_spreadsheet(dotenv_dict, spreadsheet_id, range_, drive)
         time_sleep(5)
