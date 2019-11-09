@@ -11,7 +11,7 @@ from social_media.vkontakte import post_vkontakte
 
 # The ID and range of a sample spreadsheet.
 
-from utils.time import is_it_publish_time, get_rus_weekday_title
+from utils.datetime import is_it_publish_time, get_rus_weekday_title
 from utils.google_auth import get_credentials
 from utils.google_spreadsheet import get_google_drive_id, get_spreadsheet_id_by_title, get_values_from_spreadsheet, \
     update_values_in_spreadsheet
