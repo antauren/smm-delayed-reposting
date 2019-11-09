@@ -33,6 +33,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
     day = get_rus_weekday_title()
 
     img_dir = 'images'
+    os.makedirs(img_dir, exist_ok=True)
 
     creds = get_credentials()
     service = build('sheets', 'v4', credentials=creds)
