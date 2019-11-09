@@ -1,5 +1,6 @@
-import my_extracturl as extracturl
 from urllib.parse import urlparse
+
+from .extracturl import extract
 
 
 def get_values_from_spreadsheet(service_spreadsheets_values, spreadsheet_id, range):
@@ -28,7 +29,7 @@ def update_values_in_spreadsheet(service_spreadsheets_values, spreadsheet_id, va
 
 
 def get_google_drive_id(text: str) -> str:
-    url_list = extracturl.extract(text)
+    url_list = extract(text)
     url = url_list[0]
 
     query = urlparse(url).query
