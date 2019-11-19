@@ -1,4 +1,4 @@
-# https://pypi.org/project/extracturl/#files
+# extracturl-1.0.1.tar.gz from https://pypi.org/project/extracturl/#files
 
 import re
 import string
