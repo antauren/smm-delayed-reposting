@@ -38,7 +38,12 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
 
     values = get_values_from_spreadsheet(service_spreadsheets_values, spreadsheet_id, range)
 
+    max_width = max(map(len, values))
+
     for num, row in enumerate(values[1:]):
+        if len(row) != max_width:
+            continue
+
         sheet_row_num = num + 1
 
         vk_index, telegram_index, facebook_index = 0, 1, 2
