@@ -22,7 +22,7 @@ from utils.pydrive import get_file_list, get_drive, download_txt_file_from_googl
 def is_yes(word: str) -> bool:
     word = word.strip().lower()
 
-    return word == 'да' or word == 'yes'
+    return word in {'да', 'yes'}
 
 
 def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
