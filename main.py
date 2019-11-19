@@ -19,6 +19,10 @@ from utils.pydrive import get_file_list, get_drive, download_txt_file_from_googl
     download_img_file_from_google_drive
 
 
+def sleep(minutes):
+    time.sleep(minutes * 60)
+
+
 def is_yes(word: str) -> bool:
     word = word.strip().lower()
 
@@ -72,7 +76,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
         if (img_path is None) and not text:
             continue
 
-        time.sleep(0.5 * 60)
+        sleep(0.5)
 
         is_all_posted = True
 
@@ -115,4 +119,4 @@ if __name__ == '__main__':
 
     while True:
         check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], drive)
-        time.sleep(5 * 60)
+        sleep(5)
