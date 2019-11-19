@@ -109,15 +109,14 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
 
 
 if __name__ == '__main__':
-    range_ = 'A2:H'
-    title = 'Расписание публикаций ноябрь'
 
     drive = get_drive()
     file_list = get_file_list(drive)
 
-    spreadsheet_id = get_spreadsheet_id_by_title(title, file_list)
     dotenv_dict = dotenv_values()
 
+    spreadsheet_id = get_spreadsheet_id_by_title(dotenv_dict['TITLE'], file_list)
+
     while True:
-        check_spreadsheet(dotenv_dict, spreadsheet_id, range_, drive)
+        check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], drive)
         time_sleep(5)
