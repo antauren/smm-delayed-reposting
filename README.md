@@ -9,8 +9,10 @@
 
 ## Чтобы запустить, потребуются следующие данные
 
-* файл `credentials.json` (для работы с [Google Sheets API])  
-* файл `client_secrets.json` (для работы с Google Drive API через [PyDrive])  
+* файл `credentials.json` для работы с Google Sheets API
+([инструкция как получить файл], см. Шаг 1. Создать сервисный аккаунт)  
+* файл `client_secrets.json` для работы с Google Drive API через PyDrive
+([инструкция как получить]) 
 * токены и айди групп соц.сетей, например:  
     * `FACEBOOK_TOKEN`, `FACEBOOK_GROUP_ID` 
     * `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`
@@ -51,5 +53,5 @@ pip install -r requirements.txt
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
 
-[Google Sheets API]: https://www.youtube.com/watch?v=Bf8KHZtcxnA
-[PyDrive]: https://gsuitedevs.github.io/PyDrive/docs/build/html/quickstart.html#authentication
+[инструкция как получить]: https://gsuitedevs.github.io/PyDrive/docs/build/html/quickstart.html#authentication
+[инструкция как получить файл]: https://habr.com/ru/post/305378/
