@@ -15,10 +15,6 @@ def get_drive():
     return drive
 
 
-def get_file_list(drive):
-    return drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
-
-
 def download_txt_file_from_google_drive(id, drive):
     file_ = drive.CreateFile({'id': id})
 

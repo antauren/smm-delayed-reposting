@@ -36,9 +36,3 @@ def get_google_drive_id(text: str) -> str:
     id_ = query.split('=')[1].split('"')[0]
 
     return id_
-
-
-def get_spreadsheet_id_by_title(title, file_list):
-    for file_ in file_list:
-        if file_['title'] == title:
-            return file_['id']

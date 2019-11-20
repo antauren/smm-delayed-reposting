@@ -9,14 +9,11 @@ from social_media.facebook import post_facebook
 from social_media.telegram import post_telegram
 from social_media.vkontakte import post_vkontakte
 
-# The ID and range of a sample spreadsheet.
-
 from utils.datetime import is_it_publish_time, get_rus_weekday_title
 from utils.google_auth import get_credentials
-from utils.google_spreadsheet import get_google_drive_id, get_spreadsheet_id_by_title, get_values_from_spreadsheet, \
-    update_values_in_spreadsheet
-from utils.pydrive import get_file_list, get_drive, download_txt_file_from_google_drive, \
-    download_img_file_from_google_drive
+from utils.google_spreadsheet import get_google_drive_id, get_values_from_spreadsheet, update_values_in_spreadsheet
+from utils.pydrive import get_drive, download_txt_file_from_google_drive, download_img_file_from_google_drive
+from utils.google_drive import search_files_by_name
 
 
 def is_yes(word: str) -> bool:
@@ -25,17 +22,13 @@ def is_yes(word: str) -> bool:
     return word in {'да', 'yes'}
 
 
-def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
+def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheets_service):
     day = get_rus_weekday_title()
 
     img_dir = 'images'
     os.makedirs(img_dir, exist_ok=True)
 
-    creds = get_credentials()
-    service = build('sheets', 'v4', credentials=creds)
-
-    service_spreadsheets_values = service.spreadsheets().values()
-
+    service_spreadsheets_values = sheets_service.spreadsheets().values()
     values = get_values_from_spreadsheet(service_spreadsheets_values, spreadsheet_id, range)
 
     max_width = max(map(len, values))
@@ -63,12 +56,12 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
         img_path = ''
         if img_hyperlink.strip():
             file_id = get_google_drive_id(img_hyperlink)
-            img_path = download_img_file_from_google_drive(file_id, drive, img_dir)
+            img_path = download_img_file_from_google_drive(file_id, pydrive_service, img_dir)
 
         text = ''
         if doc_hyperlink.strip():
             file_id = get_google_drive_id(doc_hyperlink)
-            text = download_txt_file_from_google_drive(file_id, drive)
+            text = download_txt_file_from_google_drive(file_id, pydrive_service)
 
         text = text.strip()
         if not os.path.exists(img_path):
@@ -110,14 +103,17 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, drive):
 
 
 if __name__ == '__main__':
-
-    drive = get_drive()
-    file_list = get_file_list(drive)
-
     dotenv_dict = dotenv_values()
 
-    spreadsheet_id = get_spreadsheet_id_by_title(dotenv_dict['TITLE'], file_list)
+    pydrive_service = get_drive()
+
+    credentials = get_credentials()
+    drive_service = build('drive', 'v3', credentials=credentials)
+    sheets_service = build('sheets', 'v4', credentials=credentials)
+
+    files = search_files_by_name(dotenv_dict['TITLE'], drive_service)
+    spreadsheet_id = files[0]['id']
 
     while True:
-        check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], drive)
+        check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], pydrive_service, sheets_service)
         time.sleep(5 * 60)
