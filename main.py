@@ -2,6 +2,7 @@ import os.path
 from googleapiclient.discovery import build
 
 import time
+import tempfile
 
 from dotenv import dotenv_values
 
@@ -22,11 +23,8 @@ def is_yes(word: str) -> bool:
     return word in {'да', 'yes'}
 
 
-def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheets_service):
+def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheets_service, tmpdirname):
     day = get_rus_weekday_title()
-
-    img_dir = 'images'
-    os.makedirs(img_dir, exist_ok=True)
 
     service_spreadsheets_values = sheets_service.spreadsheets().values()
     values = get_values_from_spreadsheet(service_spreadsheets_values, spreadsheet_id, range)
@@ -56,7 +54,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
         img_path = ''
         if img_hyperlink.strip():
             file_id = get_google_drive_id(img_hyperlink)
-            img_path = download_img_file_from_google_drive(file_id, pydrive_service, img_dir)
+            img_path = download_img_file_from_google_drive(file_id, pydrive_service, tmpdirname)
 
         text = ''
         if doc_hyperlink.strip():
@@ -115,5 +113,9 @@ if __name__ == '__main__':
     spreadsheet_id = files[0]['id']
 
     while True:
-        check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], pydrive_service, sheets_service)
+        with tempfile.TemporaryDirectory(prefix='tmp_images_',
+                                         dir=os.path.dirname(__file__)
+                                         ) as tmpdirname:
+            check_spreadsheet(dotenv_dict, spreadsheet_id, dotenv_dict['RANGE'], pydrive_service, sheets_service,
+                              tmpdirname)
         time.sleep(5 * 60)
