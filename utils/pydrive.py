@@ -21,11 +21,16 @@ def download_txt_file_from_google_drive(id, drive):
     return file_.GetContentString(mimetype='text/plain')
 
 
-def download_img_file_from_google_drive(id, drive, dir_path):
+def download_img_file_from_google_drive(id, drive, dir_path, suffix=''):
     file_ = drive.CreateFile({'id': id})
 
     file_.FetchMetadata()
     filename = file_['originalFilename']
+
+    if suffix:
+        root, ext = os.path.splitext(filename)
+        filename = '{}_{}{}'.format(root, suffix, ext)
+
     filepath = os.path.join(dir_path, filename)
 
     file_.GetContentFile(filepath)

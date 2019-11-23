@@ -57,7 +57,8 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
         img_path = ''
         if img_hyperlink.strip():
             file_id = get_google_drive_id(img_hyperlink)
-            img_path = download_img_file_from_google_drive(file_id, pydrive_service, tmpdirname)
+            img_path = download_img_file_from_google_drive(file_id, pydrive_service, tmpdirname,
+                                                           suffix=str(num))
 
         text = ''
         if doc_hyperlink.strip():
@@ -120,6 +121,8 @@ if __name__ == '__main__':
     spreadsheet_id = files[0]['id']
 
     while True:
+        # пока не вижу возможности использовать NamedTemporaryFile
+        # при вызове метода GetContentFile в ф-и download_img_file_from_google_drive получаю Permission denied
         with tempfile.TemporaryDirectory(prefix='tmp_images_',
                                          dir=os.path.dirname(__file__)
                                          ) as tmpdirname:
