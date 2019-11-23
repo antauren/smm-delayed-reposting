@@ -73,9 +73,15 @@ def upload_photo_to_server(image_path, upload_url) -> dict:
     return res.json()
 
 
+class VkError(Exception):
+    def __init__(self, text):
+        self.txt = text
+
+
 def raise_for_status(response):
     response.raise_for_status()
 
     resp_dict = response.json()
     if 'error' in resp_dict:
-        raise Exception(resp_dict['error']['error_msg'])
+        vk_error = VkError(resp_dict['error']['error_msg'])
+        raise vk_error

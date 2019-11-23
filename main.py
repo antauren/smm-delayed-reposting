@@ -4,11 +4,14 @@ from googleapiclient.discovery import build
 import time
 import tempfile
 
+import requests
+import telegram
+
 from dotenv import dotenv_values
 
 from social_media.facebook import post_facebook
 from social_media.telegram import post_telegram
-from social_media.vkontakte import post_vkontakte
+from social_media.vkontakte import post_vkontakte, VkError
 
 from utils.datetime import is_it_publish_time, get_rus_weekday_title
 from utils.google_auth import get_credentials
@@ -76,14 +79,18 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
             try:
                 post_vkontakte(img_path, dotenv_dict['VKONTAKTE_TOKEN'], dotenv_dict['VKONTAKTE_GROUP_ID'], text)
                 values[sheet_row_num][vk_index] = 'нет'
-            except:
+
+            except VkError:
                 is_all_posted = False
 
         if is_yes(row[telegram_index]):
             try:
                 post_telegram(img_path, dotenv_dict['TELEGRAM_TOKEN'], dotenv_dict['TELEGRAM_CHAT_ID'], text)
                 values[sheet_row_num][telegram_index] = 'нет'
-            except:
+
+            except telegram.error.BadRequest:
+                is_all_posted = False
+            except telegram.error.Unauthorized:
                 is_all_posted = False
 
         if is_yes(row[facebook_index]):
@@ -91,7 +98,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
                 post_facebook(img_path, dotenv_dict['FACEBOOK_TOKEN'], dotenv_dict['FACEBOOK_GROUP_ID'], text)
                 values[sheet_row_num][facebook_index] = 'нет'
 
-            except:
+            except requests.exceptions.HTTPError:
                 is_all_posted = False
 
         if is_all_posted:
