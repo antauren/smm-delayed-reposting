@@ -83,6 +83,8 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
 
             except VkError:
                 is_all_posted = False
+            except requests.exceptions.HTTPError:
+                is_all_posted = False
 
         if is_yes(row[telegram_index]):
             try:
