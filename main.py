@@ -58,7 +58,8 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
         if img_hyperlink.strip():
             file_id = get_google_drive_id(img_hyperlink)
             img_path = download_img_file_from_google_drive(file_id, pydrive_service, tmpdirname,
-                                                           suffix=str(num))
+                                                           suffix=str(num)
+                                                           )
 
         text = ''
         if doc_hyperlink.strip():
@@ -81,9 +82,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
                 post_vkontakte(img_path, dotenv_dict['VKONTAKTE_TOKEN'], dotenv_dict['VKONTAKTE_GROUP_ID'], text)
                 values[sheet_row_num][vk_index] = 'нет'
 
-            except VkError:
-                is_all_posted = False
-            except requests.exceptions.HTTPError:
+            except (VkError, requests.exceptions.HTTPError):
                 is_all_posted = False
 
         if is_yes(row[telegram_index]):
@@ -91,9 +90,7 @@ def check_spreadsheet(dotenv_dict, spreadsheet_id, range, pydrive_service, sheet
                 post_telegram(img_path, dotenv_dict['TELEGRAM_TOKEN'], dotenv_dict['TELEGRAM_CHAT_ID'], text)
                 values[sheet_row_num][telegram_index] = 'нет'
 
-            except telegram.error.BadRequest:
-                is_all_posted = False
-            except telegram.error.Unauthorized:
+            except (telegram.error.BadRequest, telegram.error.Unauthorized):
                 is_all_posted = False
 
         if is_yes(row[facebook_index]):
